@@ -24,7 +24,7 @@ class BoardImpl
       int m_Cols;
       int m_Rows;
     const Game& m_game;
-    char boardMatrix[][10];
+    char boardMatrix[MAXROWS][MAXCOLS];
 };
 
 BoardImpl::BoardImpl(const Game& g)
@@ -32,27 +32,35 @@ BoardImpl::BoardImpl(const Game& g)
 {
     m_Cols = m_game.cols();
     m_Rows = m_game.rows();
-    or (int i = 0; i < m_Cols; ++i) {
+    //Construct Empty Matrix
+    for (int i = 0; i < m_Cols; ++i) {
         for (int j = 0; j < m_Rows; ++j) {
             boardMatrix[i][j] == '.';
         }
     }
-    // This compiles, but may not be correct
 }
 
 void BoardImpl::clear()
 {
-    for (int i = 0; i < 10; ++i) {
+    for(int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             boardMatrix[i][j] == '.';
         }
     }
-    // This compiles, but may not be correct
 }
 
 void BoardImpl::block()
 {
-    // TODO:  Replace this with code to block half of the cells on the board
+    for (int i = 0; i < ((m_Cols)*(m_Rows))/2; ++i) {
+        int x = randInt(MAXCOLS);
+        int y = randInt(MAXROWS);
+        if(boardMatrix[x][y] == '.'){
+            boardMatrix[x][y] = 'X';
+        }
+        else{
+            i--;
+        }
+    }
 }
 
 void BoardImpl::unblock()
@@ -62,7 +70,6 @@ void BoardImpl::unblock()
 
 bool BoardImpl::placeShip(Point topOrLeft, int shipId, Direction dir)
 {
-    return false; // This compiles, but may not be correct
 }
 
 bool BoardImpl::unplaceShip(Point topOrLeft, int shipId, Direction dir)

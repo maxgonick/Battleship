@@ -6,6 +6,7 @@
 #include <string>
 #include <cstdlib>
 #include <cctype>
+#include <vector>
 
 using namespace std;
 
@@ -23,6 +24,16 @@ class GameImpl
     char shipSymbol(int shipId) const;
     string shipName(int shipId) const;
     Player* play(Player* p1, Player* p2, Board& b1, Board& b2, bool shouldPause);
+  private:
+    int m_Rows;
+    int m_Cols;
+    struct Ship {
+        int id;
+        int length;
+        char symbol;
+        std::string name;
+    };
+    vector<Ship*> Ships;
 };
 
 void waitForEnter()
@@ -33,17 +44,28 @@ void waitForEnter()
 
 GameImpl::GameImpl(int nRows, int nCols)
 {
-    // This compiles but may not be correct
+    if (nRows < 1  ||  nRows > MAXROWS)
+    {
+        cout << "Number of rows must be >= 1 and <= " << MAXROWS << endl;
+        exit(1);
+    }
+    if (nCols < 1  ||  nCols > MAXCOLS)
+    {
+        cout << "Number of columns must be >= 1 and <= " << MAXCOLS << endl;
+        exit(1);
+    }
+    m_Rows = nRows;
+    m_Cols = nCols;
 }
 
 int GameImpl::rows() const
 {
-    return -1;  // This compiles but may not be correct
+    return m_Rows;
 }
 
 int GameImpl::cols() const
 {
-    return -1;  // This compiles but may not be correct
+    return m_Cols;
 }
 
 bool GameImpl::isValid(Point p) const
@@ -58,32 +80,39 @@ Point GameImpl::randomPoint() const
 
 bool GameImpl::addShip(int length, char symbol, string name)
 {
-    return false;  // This compiles but may not be correct
+    //Dynamically Allocates new Ship and assigns member variables (already been validated by Game::addShip
+    Ship* m_Ship = new Ship;
+    m_Ship->symbol = symbol;
+    m_Ship->length = length;
+    m_Ship->name = name;
+    //Adds ship to vector
+    Ships.push_back(m_Ship);
+    return true;
 }
 
 int GameImpl::nShips() const
 {
-    return -1;  // This compiles but may not be correct
+    return Ships.size();
 }
 
 int GameImpl::shipLength(int shipId) const
 {
-    return -1;  // This compiles but may not be correct
+    return Ships[shipId]->length;
 }
 
 char GameImpl::shipSymbol(int shipId) const
 {
-    return '?';  // This compiles but may not be correct
+    return Ships[shipId]->symbol;
 }
 
 string GameImpl::shipName(int shipId) const
 {
-    return "";  // This compiles but may not be correct
+    return Ships[shipId]->name;
 }
 
 Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool shouldPause)
 {
-    return nullptr;  // This compiles but may not be correct
+
 }
 
 //******************** Game functions *******************************
