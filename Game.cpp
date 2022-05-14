@@ -33,6 +33,7 @@ class GameImpl
         char symbol;
         std::string name;
     };
+    //Storage of Ships added
     vector<Ship*> Ships;
 };
 
@@ -85,6 +86,7 @@ bool GameImpl::addShip(int length, char symbol, string name)
     m_Ship->symbol = symbol;
     m_Ship->length = length;
     m_Ship->name = name;
+    m_Ship->id = Ships.size();
     //Adds ship to vector
     Ships.push_back(m_Ship);
     return true;

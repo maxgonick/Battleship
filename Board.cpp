@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "globals.h"
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,8 +20,7 @@ class BoardImpl
     bool allShipsDestroyed() const;
 
   private:
-      // TODO:  Decide what private members you need.  Here's one that's likely
-      //        to be useful:
+
       int m_Cols;
       int m_Rows;
     const Game& m_game;
@@ -51,30 +51,124 @@ void BoardImpl::clear()
 
 void BoardImpl::block()
 {
-    for (int i = 0; i < ((m_Cols)*(m_Rows))/2; ++i) {
-        int x = randInt(MAXCOLS);
-        int y = randInt(MAXROWS);
+    int counter = 0;
+    while(counter != ((m_Rows*m_Cols)/2)){
+        int x = randInt(m_Rows);
+        int y = randInt(m_Cols);
         if(boardMatrix[x][y] == '.'){
             boardMatrix[x][y] = 'X';
-        }
-        else{
-            i--;
+            counter++;
         }
     }
 }
 
 void BoardImpl::unblock()
 {
-    // TODO:  Replace this with code to unblock all blocked cells
+    for(int i = 0; i < m_Rows; ++i){
+        for (int j = 0; j < m_Cols; ++j) {
+            if(boardMatrix[i][j] == 'X'){
+                boardMatrix[i][j] = '.';
+            }
+        }
+    }
 }
 
 bool BoardImpl::placeShip(Point topOrLeft, int shipId, Direction dir)
 {
+    // Check if shipId is valid
+    if(shipId > m_game.nShips()){
+        return false;
+    }
+    // Check if ship fits within boundaries
+    if(dir == HORIZONTAL){
+        //Check if starting point is outside
+        if(topOrLeft.c > m_Cols || topOrLeft.r > m_Rows){
+            return false;
+        }
+        if((m_game.shipLength(shipId) + topOrLeft.c - 1) >= m_Cols){
+            return false;
+        }
+    }
+    if(dir == VERTICAL){
+        //Check if starting point is outside
+        if(topOrLeft.c > m_Cols || topOrLeft.r > m_Rows){
+            return false;
+        }
+        if((m_game.shipLength(shipId) + topOrLeft.r - 1) >= m_Rows){
+            return false;
+        }
+    }
+    // TODO Check if ship overlaps on another
+
+    // Check if ship overlaps on X spot in boardMatrix
+    if(dir == HORIZONTAL){
+        for (int i = topOrLeft.c; i < m_game.shipLength(shipId); ++i) {
+            if(boardMatrix[topOrLeft.r][i] == 'X'){
+                return false;
+            }
+        }
+    }
+    if(dir == VERTICAL){
+        for (int i = topOrLeft.r; i < m_game.shipLength(shipId); ++i) {
+            if(boardMatrix[i][topOrLeft.c] == 'X'){
+                return false;
+            }
+        }
+    }
+    // Check if ID has already been placed
+    for(int i = 0; i < m_Rows; ++i) {
+        for (int j = 0; j < m_Cols; ++j) {
+            if(boardMatrix[i][j] == m_game.shipSymbol(shipId)){
+                return false;
+            }
+        }
+    }
+    //Placing Ship
+    if(dir == HORIZONTAL){
+        for (int i = topOrLeft.c; i < m_game.shipLength(shipId); ++i) {
+            boardMatrix[topOrLeft.r][i] = m_game.shipSymbol(shipId);
+        }
+    }
+    else if(dir == VERTICAL){
+        for (int i = topOrLeft.r; i < m_game.shipLength(shipId); ++i) {
+            boardMatrix[i][topOrLeft.c] = m_game.shipSymbol(shipId);
+        }
+    }
+    else return false;
 }
 
 bool BoardImpl::unplaceShip(Point topOrLeft, int shipId, Direction dir)
 {
-    return false; // This compiles, but may not be correct
+    //Checks if shipId is valid
+    if(shipId > m_game.nShips() - 1){
+        return false;
+    }
+    //Check if board contains entire ship
+    if(dir == HORIZONTAL){
+        for (int i = 0; i < topOrLeft.c; ++i) {
+            if(boardMatrix[topOrLeft.r][i] != m_game.shipSymbol(shipId)){
+                return false;
+            }
+        }
+    }
+    if(dir == VERTICAL){
+        for (int i = 0; i < topOrLeft.r; ++i) {
+            if(boardMatrix[i][topOrLeft.c] != m_game.shipSymbol(shipId)){
+                return false;
+            }
+        }
+    }
+    //Unplacing Ship
+    if(dir == HORIZONTAL){
+        for(int i = topOrLeft.c; i <= m_game.shipLength(shipId); i++){
+            boardMatrix[topOrLeft.r][i] = '.';
+        }
+    }
+    if(dir == VERTICAL){
+        for(int i = topOrLeft.r; i <= m_game.shipLength(shipId); i++){
+            boardMatrix[i][topOrLeft.c] = '.';
+        }
+    }
 }
 
 void BoardImpl::display(bool shotsOnly) const
