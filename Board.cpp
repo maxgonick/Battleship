@@ -258,7 +258,7 @@ bool BoardImpl::allShipsDestroyed() const
 {
     for (int i = 0; i < m_Rows; ++i) {
         for (int j = 0; j < m_Cols; ++j) {
-            if(boardMatrix[i[j] != '.' || boardMatrix[i][j] != 'X' || boardMatrix[i][j] != 'o'){
+            if(boardMatrix[i][j] != '.' || boardMatrix[i][j] != 'X' || boardMatrix[i][j] != 'o'){
                 return false;
             }
         }

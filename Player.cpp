@@ -39,6 +39,7 @@ bool AwfulPlayer::placeShips(Board& b)
 
 Point AwfulPlayer::recommendAttack()
 {
+    //Attacks one by one starting from the end going down each row
     if (m_lastCellAttacked.c > 0)
         m_lastCellAttacked.c--;
     else
@@ -77,9 +78,126 @@ bool getLineWithTwoIntegers(int& r, int& c)
     return result;
 }
 
-// TODO:  You need to replace this with a real class declaration and
-//        implementation.
-typedef AwfulPlayer HumanPlayer;
+class HumanPlayer : public Player
+{
+    public:
+        //Constructor is already implemented through inheritance
+        //string name() const is already implemented through inheritance
+        //const Game& game() const is already implemented through inheritance
+        void input(char dir){
+            if(dir == 'v'){
+                cout << "Enter row and column of topmost cell (e.g. 3 5): ";
+                getLineWithTwoIntegers(rowInput, colInput);
+                cout << endl;
+            }
+        }
+        bool isHuman() const override{
+            return true;
+        }
+        bool placeShips(Board& b) override{
+            //Iterating placement of each ship in game
+            for (int i = 0; i < game().nShips(); ++i) {
+                b.display(false);
+                cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i ) << "): ";
+                char horOrVer;
+                cin >> horOrVer;
+                cout << endl;
+                while(horOrVer != 'h' && horOrVer != 'v'){
+                    cout << "Direction must be h or v." << endl;
+                    cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i ) << "): ";
+                    cin >> horOrVer;
+                    cout << endl;
+                }
+            }
+
+
+
+
+
+
+//            for (int i = 0; i < game().nShips(); ++i) {
+//                b.display(false);
+//                cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i ) << "): ";
+//                char horOrVer;
+//                cin >> horOrVer;
+//                cout << endl;
+//                while(horOrVer != 'h' && horOrVer != 'v'){
+//                    cout << "Direction must be h or v." << endl;
+//                    cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i ) << "): ";
+//                    cin >> horOrVer;
+//                    cout << endl;
+//                }
+//                if(horOrVer == 'h'){
+//                    cout << "Enter row and column of leftmost cell (e.g. 3 5): ";
+//                    int rowInput;
+//                    int colInput;
+//                    getLineWithTwoIntegers(rowInput, colInput);
+//                    cout << endl;
+//                    bool isValid = false;
+//                    //Data validation
+//                    while(!isValid) {
+//                        isValid = true;
+//                        if (!isdigit(rowInput) || !isdigit(colInput)) {
+//                            cout << "You must enter two integers." << endl;
+//                            isValid = false;
+//                        }
+//                        if(rowInput < 0 || rowInput >= game().rows() || colInput < 0 || colInput >= game().rows()){
+//                            cout << "The ship could not be placed there." << endl;
+//                            isValid = false;
+//                        }
+//                    }
+//                }
+////                    if(rowInput >= 0 || rowInput < game().rows() || colInput >= 0 || colInput < game().cols()){
+////                            ;
+////                    }
+////                    else if(!isdigit(rowInput) || !isdigit(colInput)){
+////                        cout << "You must enter two integers." << endl;
+////                    }
+////                    else{
+////                        cout << "The ship could not be placed there." << endl;
+////                        while(rowInput < 0 || rowInput > game().rows() || colInput < 0 || colInput > game().cols()){
+////                            cout << "Enter row and column of leftmost cell (e.g. 3 5): ";
+////                            getLineWithTwoIntegers(rowInput, colInput);
+////                        }
+////                    }
+////                    Point p(rowInput, colInput);
+////                    b.placeShip(p, i, HORIZONTAL);
+////                }
+//                else if(horOrVer == 'v'){
+//                    cout << "Enter row and column of topmost cell (e.g. 3 5): ";
+//                    int rowInput;
+//                    int colInput;
+//                    getLineWithTwoIntegers(rowInput, colInput);
+//                    cout << endl;
+//                    //Data validation
+//                    if(rowInput >= 0 || rowInput < game().rows() || colInput >= 0 || colInput < game().cols()){
+//                        ;
+//                    }
+//                    else{
+//                        cout << "The ship could not be placed there." << endl;
+//                        while(rowInput < 0 || rowInput > game().rows() || colInput < 0 || colInput > game().cols()){
+//                            cout << "The ship could not be placed there.";
+//                            getLineWithTwoIntegers(rowInput, colInput);
+//                        }
+//                    }
+//                    Point p(rowInput, colInput);
+//                    b.placeShip(p, i, VERTICAL);
+//                }
+//            }
+//            return true;
+        }
+        Point recommendAttack() override{
+
+        }
+        ~HumanPlayer() override{
+            ;
+        }
+    private:
+        int rowInput;
+        int colInput;
+
+
+};
 
 //*********************************************************************
 //  MediocrePlayer
