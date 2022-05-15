@@ -18,6 +18,7 @@ class BoardImpl
     void display(bool shotsOnly) const;
     bool attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId);
     bool allShipsDestroyed() const;
+    void BoardTest();
 
   private:
 
@@ -35,7 +36,7 @@ BoardImpl::BoardImpl(const Game& g)
     //Construct Empty Matrix
     for (int i = 0; i < m_Cols; ++i) {
         for (int j = 0; j < m_Rows; ++j) {
-            boardMatrix[i][j] == '.';
+            boardMatrix[i][j] = '.';
         }
     }
 }
@@ -44,7 +45,7 @@ void BoardImpl::clear()
 {
     for(int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
-            boardMatrix[i][j] == '.';
+            boardMatrix[i][j] = '.';
         }
     }
 }
@@ -185,6 +186,15 @@ bool BoardImpl::allShipsDestroyed() const
 {
     return false; // This compiles, but may not be correct
 }
+void BoardImpl::BoardTest(){
+    for (int i = 0; i < m_Rows; ++i) {
+        for (int j = 0; j < m_Cols; ++j) {
+            cout << boardMatrix[i][j];
+        }
+        cout << endl;
+
+    }
+}
 
 //******************** Board functions ********************************
 
@@ -239,4 +249,7 @@ bool Board::attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId)
 bool Board::allShipsDestroyed() const
 {
     return m_impl->allShipsDestroyed();
+}
+void Board::BoardTest() {
+    return m_impl->BoardTest();
 }
