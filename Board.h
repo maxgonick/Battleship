@@ -22,7 +22,6 @@ class Board
       // We prevent a Board object from being copied or assigned
     Board(const Board&) = delete;
     Board& operator=(const Board&) = delete;
-    void BoardTest();
 
   private:
     BoardImpl* m_impl;

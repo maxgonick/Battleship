@@ -18,7 +18,6 @@ class BoardImpl
     void display(bool shotsOnly) const;
     bool attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId);
     bool allShipsDestroyed() const;
-    void BoardTest();
 
   private:
 
@@ -126,14 +125,16 @@ bool BoardImpl::placeShip(Point topOrLeft, int shipId, Direction dir)
     }
     //Placing Ship
     if(dir == HORIZONTAL){
-        for (int i = topOrLeft.c; i < m_game.shipLength(shipId); ++i) {
+        for (int i = topOrLeft.c; i < (m_game.shipLength(shipId) + topOrLeft.c); ++i) {
             boardMatrix[topOrLeft.r][i] = m_game.shipSymbol(shipId);
         }
+        return true;
     }
     else if(dir == VERTICAL){
-        for (int i = topOrLeft.r; i < m_game.shipLength(shipId); ++i) {
+        for (int i = topOrLeft.r; i < (m_game.shipLength(shipId) + topOrLeft.r); ++i) {
             boardMatrix[i][topOrLeft.c] = m_game.shipSymbol(shipId);
         }
+        return true;
     }
     else return false;
 }
@@ -164,36 +165,54 @@ bool BoardImpl::unplaceShip(Point topOrLeft, int shipId, Direction dir)
         for(int i = topOrLeft.c; i <= m_game.shipLength(shipId); i++){
             boardMatrix[topOrLeft.r][i] = '.';
         }
+        return true;
     }
     if(dir == VERTICAL){
         for(int i = topOrLeft.r; i <= m_game.shipLength(shipId); i++){
             boardMatrix[i][topOrLeft.c] = '.';
         }
+        return true;
     }
+    return false;
 }
 
 void BoardImpl::display(bool shotsOnly) const
 {
-    // This compiles, but may not be correct
+    //First Line
+    cout << "  ";
+    for (int i = 0; i < m_Cols; ++i) {
+        cout << i;
+    }
+    cout << endl;
+    //Display remaining lines
+    for (int i = 0; i < m_Rows; ++i) {
+        cout << i << " ";
+        for (int j = 0; j < m_Cols; ++j) {
+            cout << boardMatrix[i][j];
+        }
+        cout << endl;
+    }
+    //shotsOnly is true
+    if(shotsOnly){
+
+    }
+    //shotsOnly is false
+    if(!shotsOnly){
+
+    }
 }
 
 bool BoardImpl::attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId)
 {
-    return false; // This compiles, but may not be correct
+    //checking if attack is in bounds
+    if(p.r > m_Rows || p.r < 0 || p.c > m_Cols || p.c < 0){
+
+    }
 }
 
 bool BoardImpl::allShipsDestroyed() const
 {
     return false; // This compiles, but may not be correct
-}
-void BoardImpl::BoardTest(){
-    for (int i = 0; i < m_Rows; ++i) {
-        for (int j = 0; j < m_Cols; ++j) {
-            cout << boardMatrix[i][j];
-        }
-        cout << endl;
-
-    }
 }
 
 //******************** Board functions ********************************
@@ -250,6 +269,4 @@ bool Board::allShipsDestroyed() const
 {
     return m_impl->allShipsDestroyed();
 }
-void Board::BoardTest() {
-    return m_impl->BoardTest();
-}
+

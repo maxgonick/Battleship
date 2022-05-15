@@ -17,15 +17,10 @@ bool addStandardShips(Game& g)
 
 int main(){
     Game test(5,5);
-    test.addShip(1, 'B', "Battleship");
-    cout << test.nShips() << ' ' << test.shipName(0);
+    test.addShip(2, 'B', "Battleship");
+    cout << test.nShips() << ' ' << test.shipName(0) << endl;
     Board boardTest(test);
-    Point shipPlace(3,3);
-    boardTest.placeShip(shipPlace, 0, VERTICAL);
-    boardTest.BoardTest();
-
-
-
+    boardTest.display(true);
 }
 
 
