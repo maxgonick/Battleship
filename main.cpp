@@ -18,8 +18,17 @@ bool addStandardShips(Game& g)
 int main(){
     Game test(5,5);
     test.addShip(2, 'B', "Battleship");
-    cout << test.nShips() << ' ' << test.shipName(0) << endl;
     Board boardTest(test);
+    Point p(1,1);
+    boardTest.placeShip(p,0,HORIZONTAL);
+    boardTest.display(false);
+    Point p1(1,3);
+    bool wasDestroyed = true;
+    int whatever = -1;
+    bool shotHit = false;
+    cout << "did it work " << boardTest.attack(p1, shotHit, wasDestroyed, whatever);
+    boardTest.display(false);
+    cout << endl << wasDestroyed << whatever << shotHit << endl;
     boardTest.display(true);
 }
 

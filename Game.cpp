@@ -112,7 +112,7 @@ string GameImpl::shipName(int shipId) const
     return Ships[shipId]->name;
 }
 
-Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool shouldPause)
+Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool shouldPause = true)
 {
 
 }

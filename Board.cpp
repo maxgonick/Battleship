@@ -56,7 +56,7 @@ void BoardImpl::block()
         int x = randInt(m_Rows);
         int y = randInt(m_Cols);
         if(boardMatrix[x][y] == '.'){
-            boardMatrix[x][y] = 'X';
+            boardMatrix[x][y] = '#';
             counter++;
         }
     }
@@ -66,7 +66,7 @@ void BoardImpl::unblock()
 {
     for(int i = 0; i < m_Rows; ++i){
         for (int j = 0; j < m_Cols; ++j) {
-            if(boardMatrix[i][j] == 'X'){
+            if(boardMatrix[i][j] == '#'){
                 boardMatrix[i][j] = '.';
             }
         }
@@ -178,41 +178,92 @@ bool BoardImpl::unplaceShip(Point topOrLeft, int shipId, Direction dir)
 
 void BoardImpl::display(bool shotsOnly) const
 {
-    //First Line
-    cout << "  ";
-    for (int i = 0; i < m_Cols; ++i) {
-        cout << i;
-    }
-    cout << endl;
-    //Display remaining lines
-    for (int i = 0; i < m_Rows; ++i) {
-        cout << i << " ";
-        for (int j = 0; j < m_Cols; ++j) {
-            cout << boardMatrix[i][j];
-        }
-        cout << endl;
-    }
     //shotsOnly is true
     if(shotsOnly){
-
+    //First Line
+        cout << "  ";
+        for (int i = 0; i < m_Cols; ++i) {
+            cout << i;
+        }
+        cout << endl;
+        //Display remaining lines
+        for (int i = 0; i < m_Rows; ++i) {
+            cout << i << " ";
+            for (int j = 0; j < m_Cols; ++j) {
+                if(boardMatrix[i][j] == 'o' || boardMatrix[i][j] == 'X'){
+                cout << boardMatrix[i][j];
+                    }
+                else{
+                    cout << '.';
+                }
+            }
+            cout << endl;
+        }
     }
     //shotsOnly is false
     if(!shotsOnly){
-
+        //First Line
+        cout << "  ";
+        for (int i = 0; i < m_Cols; ++i) {
+            cout << i;
+        }
+        cout << endl;
+        //Display remaining lines
+        for (int i = 0; i < m_Rows; ++i) {
+            cout << i << " ";
+            for (int j = 0; j < m_Cols; ++j) {
+                cout << boardMatrix[i][j];
+            }
+            cout << endl;
+        }
     }
 }
 
 bool BoardImpl::attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId)
 {
     //checking if attack is in bounds
-    if(p.r > m_Rows || p.r < 0 || p.c > m_Cols || p.c < 0){
+    if(p.r <= m_Rows-1 || p.r >= 0 || p.c <= m_Cols-1 || p.c >= 0){
+        //
+        for (int i = 0; i < m_game.nShips(); ++i) {
+            //Case if attack hits ship
+            if(boardMatrix[p.r][p.c] == m_game.shipSymbol(i)){
+                boardMatrix[p.r][p.c] = 'X';
+                shipId = i;
+                shotHit = true;
+            }
+            else{
+                boardMatrix[p.r][p.c] = 'o';
+                shotHit = false;
 
+            }
+        }
+        //Checking if entire ship is destroyed
+        if(shotHit) {
+            for (int i = 0; i < m_Rows; ++i) {
+                for (int j = 0; j < m_Cols; ++j) {
+                    if (boardMatrix[i][j] == m_game.shipSymbol(shipId)) {
+                        shipDestroyed = false;
+                    }
+                }
+
+            }
+            shipDestroyed = true;
+        }
+        return true;
     }
+    else return false;
 }
 
 bool BoardImpl::allShipsDestroyed() const
 {
-    return false; // This compiles, but may not be correct
+    for (int i = 0; i < m_Rows; ++i) {
+        for (int j = 0; j < m_Cols; ++j) {
+            if(boardMatrix[i[j] != '.' || boardMatrix[i][j] != 'X' || boardMatrix[i][j] != 'o'){
+                return false;
+            }
+        }
+    }
+
 }
 
 //******************** Board functions ********************************
