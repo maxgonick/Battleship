@@ -21,7 +21,7 @@ int main(){
     Board boardTest(test);
     Point p(1,1);
     boardTest.placeShip(p,0,HORIZONTAL);
-    HumanPlayer
+
 //    boardTest.display(false);
 //    Point p1(1,3);
 //    bool wasDestroyed = true;
