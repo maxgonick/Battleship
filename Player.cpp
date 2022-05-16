@@ -97,6 +97,7 @@ class HumanPlayer : public Player
         bool placeShips(Board& b) override{
             //Iterating placement of each ship in game
             for (int i = 0; i < game().nShips(); ++i) {
+                //Deals with h or v prompt
                 b.display(false);
                 cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i ) << "): ";
                 char horOrVer;
@@ -107,6 +108,21 @@ class HumanPlayer : public Player
                     cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i ) << "): ";
                     cin >> horOrVer;
                     cout << endl;
+                }
+                if(horOrVer == 'h'){
+                    input('h');
+                    while(!isdigit(rowInput) || !isdigit(colInput)){
+                        cout << "You must enter two integers." << endl;
+                        input('h');
+                    }
+
+
+                }
+                else{
+                    input('v');
+                    while(!isdigit(rowInput) || !isdigit(colInput) || rowInput < 0 || colInput < 0 || rowInput >= game().rows() || colInput >= game().cols()){
+                        input('v');
+                    }
                 }
             }
 
