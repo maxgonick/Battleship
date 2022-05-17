@@ -114,6 +114,57 @@ string GameImpl::shipName(int shipId) const
 
 Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool shouldPause = true)
 {
+    //Placing ships
+    if(!p1->placeShips(b1)){
+        return nullptr;
+    }
+    if(!p2->placeShips(b2)){
+        return nullptr;
+    }
+
+    int shipsCounter1 = 0;
+    int shipsCounter2 = 0;
+
+    //Player 1 turn
+    if(p1->isHuman()) {
+        b2.display(true);
+    }
+    else{
+        b2.display(false);
+    }
+    bool wasHit = false;
+    bool wasDestroyed = false;
+    int shipId = false;
+    b2.attack(p1->recommendAttack(), wasHit, wasDestroyed, shipId);
+    if(wasDestroyed){
+        shipsCounter1++;
+    }
+    if(p1->isHuman()){
+        b2.display(true);
+    }
+    else{
+        b2.display(false);
+    }
+    //Player 2 turn
+    if(p2->isHuman()){
+        b1.display(true);
+    }
+    else{
+        b1.display(false):
+    }
+    bool wasHit2;
+    bool wasDestroyed2;
+    int shipId2;
+    b1.attack(p2->recommendAttack(), wasHit2, wasDestroyed2, shipId2);
+    if(p2->isHuman()){
+        b1.display(true);
+    }
+    else{
+        b1.display(false);
+    }
+    if(wasDestroyed2){
+        shipsCounter2++;
+    }
 
 }
 

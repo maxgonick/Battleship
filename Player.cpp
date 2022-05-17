@@ -183,16 +183,58 @@ class HumanPlayer : public Player
 //        implementation.
 class MediocrePlayer : public Player{
     public:
-        MediocrePlayer(string nm, const Game& g) : Player(nm, g), mediocreBoard(g) {
+        MediocrePlayer(string nm, const Game& g) : Player(nm, g) {
         ;
         }
 
         bool placeShips(Board& b) override{
-            mediocreBoard.block();
-
+            b.block();
+            do{
+                placeShipsHelper(b, 0);
+            }
+            while (!placeShipsHelper(b, 0));
         }
+
+        bool placeShipsHelper(Board& b, int shipId){
+            if(shipId + 1 == game().nShips()){
+                return true;
+            }
+            //Vertical Place
+            bool wasPlaced = false;
+            for (int i = 0; i < game().cols(); ++i){
+                for (int j = 0; j < game().rows(); ++j){
+                    Point p(i,j);
+                    if(b.placeShip(p, shipId, VERTICAL)){
+                        wasPlaced = true;
+                        placeShipsHelper(b, shipId+1);
+                    }
+                }
+            }
+            if(!wasPlaced){
+                for (int i = 0; i < game().rows(); ++i) {
+                    for (int j = 0; j < game().cols(); ++j) {
+                        Point p(i, j);
+                        if(b.placeShip(p, shipId, HORIZONTAL)){
+                            wasPlaced = true;
+                            placeShipsHelper(b, shipId+1);
+                        }
+                    }
+                }
+            }
+        }
+
+        void recordAttackByOpponent(Point p) override{
+            ;
+        }
+        Point recommendAttack() override{
+            ;
+        }
+        void recordAttackResult(Point p, bool validShot, bool shotHit, bool shipDestroyed, int shipId) override{
+            ;
+        }
+
+
     private:
-        Board mediocreBoard;
 };
 
 // Remember that Mediocre::placeShips(Board& b) must start by calling
