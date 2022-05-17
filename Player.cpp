@@ -81,7 +81,7 @@ bool getLineWithTwoIntegers(int& r, int& c)
 class HumanPlayer : public Player
 {
     public:
-        //Constructor is already implemented through inheritance
+        HumanPlayer(string nm, const Game& g);
         //string name() const is already implemented through inheritance
         //const Game& game() const is already implemented through inheritance
         void input(char dir){
@@ -158,23 +158,43 @@ class HumanPlayer : public Player
             return p1;
         }
 
-    virtual void recordAttackResult(Point p, bool validShot, bool shotHit, bool shipDestroyed, int shipId) override{
+    void recordAttackResult(Point p, bool validShot, bool shotHit, bool shipDestroyed, int shipId) override {
+            ;
+        }
 
+    void recordAttackByOpponent(Point p) override{
+            ;
         }
     private:
         int rowInput;
         int colInput;
 
 
-};
 
+};
+    HumanPlayer::HumanPlayer(string nm, const Game &g) : Player(nm, g){
+        ;
+    }
 //*********************************************************************
 //  MediocrePlayer
 //*********************************************************************
 
 // TODO:  You need to replace this with a real class declaration and
 //        implementation.
-typedef AwfulPlayer MediocrePlayer;
+class MediocrePlayer : public Player{
+    public:
+        MediocrePlayer(string nm, const Game& g) : Player(nm, g), mediocreBoard(g) {
+        ;
+        }
+
+        bool placeShips(Board& b) override{
+            mediocreBoard.block();
+
+        }
+    private:
+        Board mediocreBoard;
+};
+
 // Remember that Mediocre::placeShips(Board& b) must start by calling
 // b.block(), and must call b.unblock() just before returning.
 
