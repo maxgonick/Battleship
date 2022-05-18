@@ -201,39 +201,45 @@ class MediocrePlayer : public Player{
         }
 
         bool placeShips(Board& b) override{
-            b.block();
-            do{
-                placeShipsHelper(b, 0);
+            for (int i = 0; i < 50; ++i) {
+                b.block();
+                if(placeShipsHelper(b, 0)){
+                    b.unblock();
+                    return true;
+                }
+                b.clear();
             }
-            while (!placeShipsHelper(b, 0));
+            return false;
         }
 
         bool placeShipsHelper(Board& b, int shipId){
-            if(shipId + 1 == game().nShips()){
+            //All ships are placed
+            if(shipId == game().nShips()){
                 return true;
             }
-            //Vertical Place
-            bool wasPlaced = false;
-            for (int i = 0; i < game().cols(); ++i){
-                for (int j = 0; j < game().rows(); ++j){
-                    Point p(i,j);
+
+            for (int i = 0; i < game().rows(); ++i) {
+                for (int j = 0; j < game().cols(); ++j) {
+                    Point p(i, j);
                     if(b.placeShip(p, shipId, VERTICAL)){
-                        wasPlaced = true;
-                        placeShipsHelper(b, shipId+1);
-                    }
-                }
-            }
-            if(!wasPlaced){
-                for (int i = 0; i < game().rows(); ++i) {
-                    for (int j = 0; j < game().cols(); ++j) {
-                        Point p(i, j);
-                        if(b.placeShip(p, shipId, HORIZONTAL)){
-                            wasPlaced = true;
-                            placeShipsHelper(b, shipId+1);
+                        bool allWerePlacedSuccessfully = placeShipsHelper(b, shipId+1);
+                        //Placed all ships
+                        if(allWerePlacedSuccessfully == true){
+                            return true;
                         }
+                        b.unplaceShip(p, shipId, VERTICAL);
+                    }
+                    if(b.placeShip(p, shipId, HORIZONTAL)){
+                        bool allWerePlacedSuccessfully2 = placeShipsHelper(b, shipId+1);
+                        //Placed all ships
+                        if(allWerePlacedSuccessfully2 == true){
+                            return true;
+                        }
+                        b.unplaceShip(p,shipId, HORIZONTAL);
                     }
                 }
             }
+            return false;
         }
 
         void recordAttackByOpponent(Point p) override{
