@@ -192,12 +192,16 @@ class HumanPlayer : public Player
 //  MediocrePlayer
 //*********************************************************************
 
-// TODO:  You need to replace this with a real class declaration and
-//        implementation.
 class MediocrePlayer : public Player{
     public:
         MediocrePlayer(string nm, const Game& g) : Player(nm, g) {
-        ;
+        state = 1;
+            for (int i = 0; i < game().rows(); ++i) {
+                for (int j = 0; j < game().cols(); ++j) {
+                    Point p(i,j);
+                    record.push_back(p);
+                }
+            }
         }
 
         bool placeShips(Board& b) override{
@@ -246,14 +250,45 @@ class MediocrePlayer : public Player{
             ;
         }
         Point recommendAttack() override{
-            ;
+            if(state == 1){
+               int index = randInt(record.size()) - 1;
+               Point p = record[index];
+               record.erase(record.begin() + index);
+               bool shotHit = false;
+               bool shipDestroyed = false;
+            }
         }
+
+
         void recordAttackResult(Point p, bool validShot, bool shotHit, bool shipDestroyed, int shipId) override{
-            ;
+            if(validShot && state == 1){
+                if(!shotHit){
+                    return;
+                }
+                if(shotHit == true && shipDestroyed == false){
+                    state = 2;
+                    return;
+                }
+                if(shotHit == true && shipDestroyed == true){
+                    return;
+                }
+            }
+            if(validShot && state == 2){
+                if(!shipDestroyed){
+                    //Enter cross attack pattern
+
+                }
+                else if(shipDestroyed){
+                    state = 1;
+                    return;
+                }
+            }
         }
 
 
     private:
+        int state;
+        vector<Point> record;
 };
 
 // Remember that Mediocre::placeShips(Board& b) must start by calling
