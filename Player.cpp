@@ -200,8 +200,10 @@ class MediocrePlayer : public Player{
                 for (int j = 0; j < game().cols(); ++j) {
                     Point p(i,j);
                     record.push_back(p);
+                    recordRandom[i][j] = false;
                 }
             }
+
             recordCross.resize(0);
         }
 
@@ -254,35 +256,38 @@ class MediocrePlayer : public Player{
             if(state == 1){
                int index = randInt(record.size()) - 1;
                Point p = record[index];
-               record.erase(record.begin() + index);
-                return p;
+               if(recordRandom[p.r][p.c] == false) {
+                   record.erase(record.begin() + index);
+                   recordRandom[p.r][p.c]
+                   return p;
+               }
             }
             //First Time Entering State 2
             else if(state == 2 && recordCross.size() == 0){
                 //Populates recordCross with possible positions
                 for (int i = 1; i <= 4; ++i) {
-                   if(starting.r+i < game().rows()){
+                   if(starting.r+i < game().rows() && starting.r+i >= 0){
                        Point p1(starting.r+i,starting.c);
                        recordCross.push_back(p1);
                    }
                    else break;
                 }
                 for (int i = 1; i <= 4; ++i) {
-                    if(starting.r-i < game().rows()){
+                    if(starting.r-i < game().rows() && starting.r-i >= 0){
                         Point p1(starting.r-i,starting.c);
                         recordCross.push_back(p1);
                     }
                     else break;
                 }
                 for (int i = 1; i <= 4; ++i) {
-                    if(starting.c+i < game().cols()){
+                    if(starting.c+i < game().cols() && starting.c+i >= 0){
                         Point p1(starting.r, starting.c+i);
                         recordCross.push_back(p1);
                     }
                     else break;
                 }
                 for (int i = 1; i <= 4; ++i) {
-                    if(starting.c-i < game().cols()){
+                    if(starting.c-i < game().cols() && starting.c-i >= 0){
                         Point p1(starting.r, starting.c-i);
                         recordCross.push_back(p1);
                     }
@@ -343,6 +348,7 @@ class MediocrePlayer : public Player{
         Point starting;
         vector<Point> record;
         vector<Point> recordCross;
+        bool recordRandom[MAXROWS][MAXCOLS];
 };
 
 // Remember that Mediocre::placeShips(Board& b) must start by calling

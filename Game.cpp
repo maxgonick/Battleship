@@ -124,10 +124,12 @@ Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool should
 
     int shipsCounter1 = 0;
     int shipsCounter2 = 0;
-    b1.display(false);
-    b2.display(false);
+//    cout << p1->name() << "'s turn. Board for " << p2->name() << ":" << endl;
+//    b1.display(false);
+//    b2.display(false);
 while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     //Player 1 turn
+    cout << p1->name() << "'s turn. Board for " << p2->name() << ":" << endl;
     if (p1->isHuman()) {
         b2.display(true);
     } else {
@@ -135,8 +137,19 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     }
     bool wasHit = false;
     bool wasDestroyed = false;
-    int shipId = false;
-    b2.attack(p1->recommendAttack(), wasHit, wasDestroyed, shipId);
+    int shipId = -1;
+    Point attackp1 = p1->recommendAttack();
+    b2.attack(attackp1, wasHit, wasDestroyed, shipId);
+    cout << p1->name() << " attacked (" << attackp1.r << "," << attackp1.c << ") ";
+    if(!wasHit){
+        cout << "and missed, resulting in:" << endl;
+    }
+    else if(wasHit && !wasDestroyed){
+        cout << "and hit something resulting in" << endl;
+    }
+    else if(wasHit && wasDestroyed){
+        cout << "and destroyed the " << shipName(shipId) << ", resulting in:" << endl;
+    }
     p1->recordAttackResult(p1->recommendAttack(), true, wasHit, wasDestroyed, shipId);
     if (wasDestroyed) {
         shipsCounter1++;
@@ -147,12 +160,11 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
         b2.display(false);
     }
     bool enterPressed = false;
-    cout << "Press enter to continue: ";
     if(shouldPause) {
         waitForEnter();
     }
-    cout << endl;
     //Player 2 turn
+    cout << p2->name() << "'s turn. Board for " << p1->name() << ":" << endl;
     if (p2->isHuman()) {
         b1.display(true);
     } else {
@@ -161,13 +173,23 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     bool wasHit2 = false;
     bool wasDestroyed2 = false;
     int shipId2 = false;
-    b1.attack(p2->recommendAttack(), wasHit2, wasDestroyed2, shipId2);
+    Point attackp2 = p2->recommendAttack();
+    b1.attack(attackp2, wasHit2, wasDestroyed2, shipId2);
+    cout << p2->name() << " attacked (" << attackp2.r << "," << attackp2.c << ") ";
+    if(!wasHit2){
+        cout << "and missed, resulting in:" << endl;
+    }
+    else if(wasHit2 && !wasDestroyed2){
+        cout << "and hit something resulting in" << endl;
+    }
+    else if(wasHit2 && wasDestroyed2){
+        cout << "and destroyed the " << shipName(shipId2) << ", resulting in:" << endl;
+    }
     if (p2->isHuman()) {
         b1.display(true);
     } else {
         b1.display(false);
     }
-    cout << "Press enter to continue: ";
     if(shouldPause) {
         waitForEnter();
     }
