@@ -99,6 +99,20 @@ bool BoardImpl::placeShip(Point topOrLeft, int shipId, Direction dir)
         }
     }
     // TODO Check if ship overlaps on another
+    if(dir == HORIZONTAL){
+        for (int i = 0; i < m_game.shipLength(shipId); ++i) {
+            if(boardMatrix[topOrLeft.r][topOrLeft.c + i] != '.'){
+                return false;
+            }
+        }
+    }
+    if(dir == VERTICAL){
+        for (int i = 0; i < m_game.shipLength(shipId); ++i) {
+            if(boardMatrix[topOrLeft.r + i][topOrLeft.c] != '.'){
+                return false;
+            }
+        }
+    }
 
     // Check if ship overlaps on X spot in boardMatrix
     if(dir == HORIZONTAL){

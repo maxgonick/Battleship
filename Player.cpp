@@ -4,6 +4,7 @@
 #include "globals.h"
 #include <iostream>
 #include <string>
+#include <cctype>
 
 using namespace std;
 
@@ -84,58 +85,77 @@ class HumanPlayer : public Player
         HumanPlayer(string nm, const Game& g);
         //string name() const is already implemented through inheritance
         //const Game& game() const is already implemented through inheritance
-        void input(char dir){
+        bool input(char dir, Board& b, int id){
             if(dir == 'v'){
                 cout << "Enter row and column of topmost cell (e.g. 3 5): ";
-                getLineWithTwoIntegers(rowInput, colInput);
-                cout << endl;
+                if(getLineWithTwoIntegers(rowInput, colInput)){
+                    if(rowInput >= game().rows() || colInput >= game().cols()){
+                        cout << "The ship could not be placed there." << endl;
+                        return false;
+                    }
+                    Point p1(rowInput, colInput);
+                    if(!b.placeShip(p1, id, VERTICAL)){
+                        cout << "The ship could not be placed there." << endl;
+                        return false;
+                    }
+                    return true;
+                }
+                else{
+                    cout << "You must enter two integers." << endl;
+                    return false;
+                }
+            }
+            else if(dir == 'h'){
+                cout << "Enter row and column of leftmost cell (e.g. 3 5): ";
+                if(getLineWithTwoIntegers(rowInput,colInput)){
+                    if(rowInput >= game().rows() || colInput >= game().cols()){
+                        cout << "The ship could not be placed there.";
+                        cout << endl;
+                        return false;
+                    }
+                    Point p(rowInput, colInput);
+                    if(!b.placeShip(p, id, HORIZONTAL)){
+                        cout << "The ship could not be placed there." << endl;
+                        return false;
+                    }
+                    return true;
+                }
+                else{
+                    cout << "You must enter two integers." << endl;
+                    return false;
+                }
             }
         }
         bool isHuman() const override{
             return true;
         }
-        bool placeShips(Board& b) override{
+        bool placeShips(Board& b) override {
             //Iterating placement of each ship in game
             for (int i = 0; i < game().nShips(); ++i) {
                 //Deals with h or v prompt
                 b.display(false);
-                cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i ) << "): ";
+                cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i)
+                     << "): ";
+                string throwAway;
+                cin.getline(,throwAway)
                 char horOrVer;
-                cin >> horOrVer;
-                cout << endl;
-                while(horOrVer != 'h' && horOrVer != 'v'){
+                while (horOrVer != 'h' && horOrVer != 'v') {
                     cout << "Direction must be h or v." << endl;
-                    cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i ) << "): ";
+                    cout << "Enter h or v for direction of " << game().shipName(i) << " (length "
+                         << game().shipLength(i) << "): ";
                     cin >> horOrVer;
                     cout << endl;
                 }
-                if(horOrVer == 'h'){
-                    input('h');
-                    while(!isdigit(rowInput) || !isdigit(colInput) || rowInput < 0 || colInput < 0 || rowInput >= game().rows() || colInput >= game().rows()){
-                        if(!isdigit(rowInput) || !isdigit(colInput)){
-                            cout << endl << "You must enter two integers." << endl;
-                            input('h');
-                        }
-                        else{
-                            cout << "The ship cannot be placed there." << endl;
-                            input('h');
-                        }
+                if (horOrVer == 'h') {
+                    while (!input('h', b, i)) {
                     }
-                }
-                else{
-                    input('v');
-                    while(!isdigit(rowInput) || !isdigit(colInput) || rowInput < 0 || colInput < 0 || rowInput >= game().rows() || colInput >= game().cols()){
-                        if(!isdigit(rowInput) || !isdigit(colInput)){
-                            cout << endl << "You must enter two integers." << endl;
-                            input('v');
-                        }
-                        else{
-                            cout << "The ship cannot be placed there." << endl;
-                            input('v');
-                        }
+
+                } else if (horOrVer == 'v') {
+                    while (!input('v', b, i)) {
                     }
                 }
             }
+            b.display(false);
             return true;
         }
         Point recommendAttack() override{

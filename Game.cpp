@@ -150,7 +150,7 @@ Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool should
         b1.display(true);
     }
     else{
-        b1.display(false):
+        b1.display(false);
     }
     bool wasHit2;
     bool wasDestroyed2;
