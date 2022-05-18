@@ -254,8 +254,10 @@ class MediocrePlayer : public Player{
                int index = randInt(record.size()) - 1;
                Point p = record[index];
                record.erase(record.begin() + index);
-               bool shotHit = false;
-               bool shipDestroyed = false;
+
+            }
+            else if(state == 2){
+
             }
         }
 
@@ -275,8 +277,7 @@ class MediocrePlayer : public Player{
             }
             if(validShot && state == 2){
                 if(!shipDestroyed){
-                    //Enter cross attack pattern
-
+                    return;
                 }
                 else if(shipDestroyed){
                     state = 1;
