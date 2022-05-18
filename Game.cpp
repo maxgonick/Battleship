@@ -121,51 +121,55 @@ Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool should
     if(!p2->placeShips(b2)){
         return nullptr;
     }
+    b1.display(false);
+    b2.display(false);
 
     int shipsCounter1 = 0;
     int shipsCounter2 = 0;
-
+while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     //Player 1 turn
-    if(p1->isHuman()) {
+    if (p1->isHuman()) {
         b2.display(true);
-    }
-    else{
+    } else {
         b2.display(false);
     }
     bool wasHit = false;
     bool wasDestroyed = false;
     int shipId = false;
     b2.attack(p1->recommendAttack(), wasHit, wasDestroyed, shipId);
-    if(wasDestroyed){
+    if (wasDestroyed) {
         shipsCounter1++;
     }
-    if(p1->isHuman()){
+    if (p1->isHuman()) {
         b2.display(true);
-    }
-    else{
+    } else {
         b2.display(false);
     }
     //Player 2 turn
-    if(p2->isHuman()){
+    if (p2->isHuman()) {
         b1.display(true);
-    }
-    else{
+    } else {
         b1.display(false);
     }
     bool wasHit2;
     bool wasDestroyed2;
     int shipId2;
     b1.attack(p2->recommendAttack(), wasHit2, wasDestroyed2, shipId2);
-    if(p2->isHuman()){
+    if (p2->isHuman()) {
         b1.display(true);
-    }
-    else{
+    } else {
         b1.display(false);
     }
-    if(wasDestroyed2){
+    if (wasDestroyed2) {
         shipsCounter2++;
     }
-
+}
+if(shipsCounter1 == nShips()){
+    return p1;
+}
+else if(shipsCounter2 == nShips()){
+    return p2;
+}
 }
 
 //******************** Game functions *******************************

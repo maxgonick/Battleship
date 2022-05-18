@@ -28,3 +28,5 @@ class Board
 };
 
 #endif // BOARD_INCLUDED
+
+

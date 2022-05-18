@@ -137,14 +137,15 @@ class HumanPlayer : public Player
                 cout << "Enter h or v for direction of " << game().shipName(i) << " (length " << game().shipLength(i)
                      << "): ";
                 string throwAway;
-                cin.getline(,throwAway)
-                char horOrVer;
+                getline(cin,throwAway);
+                char horOrVer =  throwAway[0];
                 while (horOrVer != 'h' && horOrVer != 'v') {
                     cout << "Direction must be h or v." << endl;
                     cout << "Enter h or v for direction of " << game().shipName(i) << " (length "
                          << game().shipLength(i) << "): ";
-                    cin >> horOrVer;
-                    cout << endl;
+                    string throwAway1;
+                    getline(cin,throwAway1);
+                    horOrVer = throwAway1[0];
                 }
                 if (horOrVer == 'h') {
                     while (!input('h', b, i)) {
@@ -162,20 +163,12 @@ class HumanPlayer : public Player
             cout << "Enter the row and column to attack (e.g., 3 5): ";
             int row;
             int col;
-            getLineWithTwoIntegers(row, col);
-            cout << endl;
-            while(!isdigit(row) || !isdigit(col) || row >= game().rows() || col >= game().cols() || row < 0 || col < 0){
-                if(!isdigit(row) || !isdigit(col)){
-                    cout << "You must enter two integer" << endl;
-                }
-                else if(row >= game().rows() || col >= game().cols() || row < 0 || col < 0){
-                    cout << name() << " the Human wasted a shot at (" << row << "," << col << ")." << endl;
-                    Point p(row, col);
-                    return p;
-                }
+            while(!getLineWithTwoIntegers(row, col)){
+                cout << "You must enter two integers." << endl;
+                cout << "Enter the row and column to attack (e.g., 3 5): ";
             }
-            Point p1(row, col);
-            return p1;
+            Point p(row, col);
+            return p;
         }
 
     void recordAttackResult(Point p, bool validShot, bool shotHit, bool shipDestroyed, int shipId) override {
