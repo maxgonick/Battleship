@@ -121,8 +121,6 @@ Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool should
     if(!p2->placeShips(b2)){
         return nullptr;
     }
-    b1.display(false);
-    b2.display(false);
 
     int shipsCounter1 = 0;
     int shipsCounter2 = 0;
@@ -162,6 +160,8 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     }
     if (wasDestroyed2) {
         shipsCounter2++;
+    }
+    if(!p1->isHuman()){
     }
 }
 if(shipsCounter1 == nShips()){
