@@ -137,6 +137,7 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     bool wasDestroyed = false;
     int shipId = false;
     b2.attack(p1->recommendAttack(), wasHit, wasDestroyed, shipId);
+    p1->recordAttackResult(p1->recommendAttack(), true, wasHit, wasDestroyed, shipId);
     if (wasDestroyed) {
         shipsCounter1++;
     }
@@ -145,6 +146,12 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     } else {
         b2.display(false);
     }
+    bool enterPressed = false;
+    cout << "Press enter to continue: ";
+    if(shouldPause) {
+        waitForEnter();
+    }
+    cout << endl;
     //Player 2 turn
     if (p2->isHuman()) {
         b1.display(true);
@@ -160,10 +167,12 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     } else {
         b1.display(false);
     }
+    cout << "Press enter to continue: ";
+    if(shouldPause) {
+        waitForEnter();
+    }
     if (wasDestroyed2) {
         shipsCounter2++;
-    }
-    if(!p1->isHuman()){
     }
 }
 if(shipsCounter1 == nShips()){

@@ -202,6 +202,7 @@ class MediocrePlayer : public Player{
                     record.push_back(p);
                 }
             }
+            recordCross.resize(0);
         }
 
         bool placeShips(Board& b) override{
@@ -254,10 +255,56 @@ class MediocrePlayer : public Player{
                int index = randInt(record.size()) - 1;
                Point p = record[index];
                record.erase(record.begin() + index);
-
+                return p;
             }
-            else if(state == 2){
-
+            //First Time Entering State 2
+            else if(state == 2 && recordCross.size() == 0){
+                //Populates recordCross with possible positions
+                for (int i = 1; i <= 4; ++i) {
+                   if(starting.r+i < game().rows()){
+                       Point p1(starting.r+i,starting.c);
+                       recordCross.push_back(p1);
+                   }
+                   else break;
+                }
+                for (int i = 1; i <= 4; ++i) {
+                    if(starting.r-i < game().rows()){
+                        Point p1(starting.r-i,starting.c);
+                        recordCross.push_back(p1);
+                    }
+                    else break;
+                }
+                for (int i = 1; i <= 4; ++i) {
+                    if(starting.c+i < game().cols()){
+                        Point p1(starting.r, starting.c+i);
+                        recordCross.push_back(p1);
+                    }
+                    else break;
+                }
+                for (int i = 1; i <= 4; ++i) {
+                    if(starting.c-i < game().cols()){
+                        Point p1(starting.r, starting.c-i);
+                        recordCross.push_back(p1);
+                    }
+                    else break;
+                }
+                int index = randInt(recordCross.size());
+                Point returnPoint = recordCross[index];
+                recordCross.erase(recordCross.begin() + index);
+                return returnPoint;
+            }
+            //Takes last point out and clears
+            else if(state == 2 && recordCross.size() == 1){
+                Point returnPoint = recordCross[0];
+                recordCross.clear();
+                return returnPoint;
+            }
+            //Entering cross pattern that is already initialized
+            else if(state == 2 && recordCross.size() != 0){
+                int index1 = randInt(recordCross.size());
+                Point returnPoint = recordCross[index1];
+                recordCross.erase(recordCross.begin() + index1);
+                return returnPoint;
             }
         }
 
@@ -268,6 +315,9 @@ class MediocrePlayer : public Player{
                     return;
                 }
                 if(shotHit == true && shipDestroyed == false){
+                    //Record starting point for cross reference
+                    Point throwaway(p.r,p.c);
+                    starting = throwaway;
                     state = 2;
                     return;
                 }
@@ -280,6 +330,7 @@ class MediocrePlayer : public Player{
                     return;
                 }
                 else if(shipDestroyed){
+                    recordCross.clear();
                     state = 1;
                     return;
                 }
@@ -289,7 +340,9 @@ class MediocrePlayer : public Player{
 
     private:
         int state;
+        Point starting;
         vector<Point> record;
+        vector<Point> recordCross;
 };
 
 // Remember that Mediocre::placeShips(Board& b) must start by calling
