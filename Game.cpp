@@ -124,6 +124,8 @@ Player* GameImpl::play(Player* p1, Player* p2, Board& b1, Board& b2, bool should
 
     int shipsCounter1 = 0;
     int shipsCounter2 = 0;
+    b1.display(false);
+    b2.display(false);
 while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     //Player 1 turn
     if (p1->isHuman()) {
@@ -149,9 +151,9 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     } else {
         b1.display(false);
     }
-    bool wasHit2;
-    bool wasDestroyed2;
-    int shipId2;
+    bool wasHit2 = false;
+    bool wasDestroyed2 = false;
+    int shipId2 = false;
     b1.attack(p2->recommendAttack(), wasHit2, wasDestroyed2, shipId2);
     if (p2->isHuman()) {
         b1.display(true);

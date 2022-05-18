@@ -19,11 +19,13 @@ bool addStandardShips(Game& g)
 
 int main(){
     const int NTRIALS = 5;
-    Game g(10,10);
+    Game g(5,5);
     Player* p1 = createPlayer("awful", "max", g);
     Player* p2 = createPlayer("awful", "whatever", g);
+//    g.addShip(1, 'A', "whatever");
     addStandardShips(g);
     g.play(p1,p2);
+
 }
 //
 //

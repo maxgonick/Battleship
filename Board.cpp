@@ -245,18 +245,18 @@ bool BoardImpl::attack(Point p, bool& shotHit, bool& shipDestroyed, int& shipId)
                 shipId = i;
                 shotHit = true;
             }
-            else{
-                boardMatrix[p.r][p.c] = 'o';
-                shotHit = false;
-
-            }
         }
+        if(boardMatrix[p.r][p.c] != 'X'){
+        boardMatrix[p.r][p.c] = 'o';
+        shotHit = false;
+            }
         //Checking if entire ship is destroyed
         if(shotHit) {
             for (int i = 0; i < m_Rows; ++i) {
                 for (int j = 0; j < m_Cols; ++j) {
                     if (boardMatrix[i][j] == m_game.shipSymbol(shipId)) {
                         shipDestroyed = false;
+                        return true;
                     }
                 }
 
