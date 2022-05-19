@@ -385,6 +385,7 @@ public:
         state = 1;
         crossRecord.resize(0);
         counter = 2;
+        tester = 0;
 //        Sets record matrix to all be false;
         for (int i = 0; i < game().rows(); ++i) {
             for (int j = 0; j < game().cols(); ++j) {
@@ -467,11 +468,18 @@ public:
     Point randomCheckerPoint(){
         int index = randInt(randomRecord.size());
         Point p = randomRecord[index];
-        while(masterRecord[p.r][p.c]){
-//            randomRecord.erase(randomRecord.begin() + index - 1);
-            int index2 = randInt(randomRecord.size());
-            p = randomRecord[index2];
+        while (masterRecord[p.r][p.c]) {
+            index = randInt(randomRecord.size());
+//                    cerr<< "in loop "<< index2<<endl;
+            p = randomRecord[index];
+            if(masterRecord[p.r][p.c] == true && randomRecord.size() != 0){
+                randomRecord.erase(randomRecord.begin() + index);
+            }
+            else if(masterRecord[p.r][p.c] == true && randomRecord.size() == 0){
+                return randomPointFull();
+            }
         }
+        randomRecord.erase(randomRecord.begin() + index);
         //Update masterRecord
         masterRecord[p.r][p.c] = true;
         return p;
@@ -493,29 +501,56 @@ public:
         masterRecord[p.r][p.c] = true;
         return;
     }
-    Point recommendAttack() override{
-        //Randomly attack checkerboard
-        if(state == 1){
 
-            if(randomRecord.empty()){
+    Point randomPointFull(){
+        Point p(randInt(game().rows()), randInt(game().cols()));
+        while (masterRecord[p.r][p.c] == true) {
+            Point temp(randInt(game().rows()), randInt(game().cols()));
+            p = temp;
+        }
+        masterRecord[p.r][p.c] = true;
+        return p;
+    }
+    Point recommendAttack() override{
+        if(state == 3 && tester == 18){
+            tester = 0;
+            state = 1;
+            counter = 2;
+            crossRecord.clear();
+            while(!Directions.empty()){
+                Directions.pop();
+            }
+        }
+        //Randomly attack checkerboard
+        if(state == 1) {
+
+            if (randomRecord.empty()) {
                 Point p(randInt(game().rows()), randInt(game().cols()));
-                while(masterRecord[p.r][p.c] == true){
-                    Point temp(randInt(game().rows()),randInt(game().cols()));
+                while (masterRecord[p.r][p.c] == true) {
+                    Point temp(randInt(game().rows()), randInt(game().cols()));
                     p = temp;
                 }
                 masterRecord[p.r][p.c] = true;
                 return p;
+            } else {
+                int index = randInt(randomRecord.size());
+                Point p = randomRecord[index];
+                while (masterRecord[p.r][p.c]) {
+                    index = randInt(randomRecord.size());
+//                    cerr<< "in loop "<< index2<<endl;
+                    p = randomRecord[index];
+                    if(masterRecord[p.r][p.c] == true && randomRecord.size() != 0){
+                        randomRecord.erase(randomRecord.begin() + index);
+                    }
+                    else if(masterRecord[p.r][p.c] == true && randomRecord.size() == 0){
+                        return randomPointFull();
+                    }
+                }
+                randomRecord.erase(randomRecord.begin() + index);
+                //Update masterRecord
+                masterRecord[p.r][p.c] = true;
+                return p;
             }
-
-            int index = randInt(randomRecord.size());
-            Point p = randomRecord[index];
-            while(masterRecord[p.r][p.c]){
-                int index2 = randInt(randomRecord.size());
-                p = randomRecord[index2];
-            }
-            //Update masterRecord
-            masterRecord[p.r][p.c] = true;
-            return p;
         }
         //First Time entering Cross Attack
         if(state == 2 && crossRecord.size() == 0){
@@ -572,6 +607,9 @@ public:
             return p;
         }
         //State 3
+        if(state == 3){
+            tester++;
+        }
         if(state == 3 && !Directions.empty()){
             if(Directions.front() == "LEFT"){
                 if(starting.c - counter >= 0){
@@ -672,8 +710,11 @@ return randomCheckerPoint();
                     Directions.pop();
                     counter = 1;
                 }
-                else{
+                else if(Directions.empty()){
                     state = 1;
+                    counter = 2;
+                    crossRecord.clear();
+                    return;
                 }
                 return;
             }
@@ -698,6 +739,7 @@ return randomCheckerPoint();
     }
 private:
     int state;
+    int tester;
     int counter;
     bool masterRecord[MAXROWS][MAXCOLS];
     vector<Point> randomRecord;
