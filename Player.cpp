@@ -124,6 +124,7 @@ class HumanPlayer : public Player
                     return false;
                 }
             }
+            return true;
         }
         bool isHuman() const override{
             return true;
@@ -326,6 +327,8 @@ class MediocrePlayer : public Player{
                 recordRandom[returnPoint.r][returnPoint.c] = true;
                 return returnPoint;
             }
+            Point p(0,0);
+            return p;
         }
 
 
@@ -600,6 +603,8 @@ public:
                 }
             }
         }
+        Point p(0,0);
+        return p;
     }
 
     void recordAttackResult(Point p, bool validShot, bool shotHit, bool shipDestroyed, int shipId) override{
