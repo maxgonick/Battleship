@@ -254,10 +254,10 @@ class MediocrePlayer : public Player{
         }
         Point recommendAttack() override{
             if(state == 1){
-               int index = randInt(record.size() - 1);
+               int index = randInt(record.size());
                Point p = record[index];
-               while(recordRandom[p.r][p.c] == true) {
-                   index = randInt(record.size() - 1);
+               while(recordRandom[p.r][p.c] == true){
+                   index = randInt(record.size());
                    p = record[index];
                }
                record.erase(record.begin() + index);
@@ -324,6 +324,7 @@ class MediocrePlayer : public Player{
                 int index1 = randInt(recordCross.size());
                 Point returnPoint = recordCross[index1];
                 recordCross.erase(recordCross.begin() + index1);
+                recordRandom[returnPoint.r][returnPoint.c] = true;
                 return returnPoint;
             }
         }

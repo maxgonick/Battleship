@@ -31,8 +31,7 @@ bool addStandardShips(Game& g)
 
 int main()
 {
-    const int NTRIALS = 100;
-
+    const int NTRIALS = 100000;
     cout << "Select one of these choices for an example of the game:" << endl;
     cout << "  1.  A mini-game between two mediocre players" << endl;
     cout << "  2.  A mediocre player against a human player" << endl;
@@ -48,8 +47,9 @@ int main()
     }
     else if (line[0] == '1')
     {
-        Game g(2, 3);
+        Game g(3, 3);
         g.addShip(2, 'R', "rowboat");
+        g.addShip(3, 'B', "battleship");
         Player* p1 = createPlayer("mediocre", "Popeye", g);
         Player* p2 = createPlayer("mediocre", "Bluto", g);
         cout << "This mini-game has one ship, a 2-segment rowboat." << endl;
