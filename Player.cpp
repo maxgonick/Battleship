@@ -4,7 +4,6 @@
 #include "globals.h"
 #include <iostream>
 #include <string>
-#include <cctype>
 
 using namespace std;
 
@@ -208,7 +207,15 @@ class MediocrePlayer : public Player{
         }
 
         bool placeShips(Board& b) override{
-
+                    for (int i = 0; i < 50; ++i) {
+            b.block();
+            if(placeShipsHelper(b, 0)){
+                b.unblock();
+                return true;
+            }
+            b.clear();
+        }
+        return false;
         }
 
         bool placeShipsHelper(Board& b, int shipId){
@@ -366,14 +373,45 @@ class MediocrePlayer : public Player{
 //  GoodPlayer
 //*********************************************************************
 
-// TODO:  You need to replace this with a real class declaration and
-//        implementation.
 class GoodPlayer : public Player
 {
 public:
 
     GoodPlayer(string nm, const Game& g) : Player(nm, g){
         state = 1;
+        secondHit = false;
+        direction = "UNKNOWN";
+        changed = false;
+        changedOrientation = false;
+        counter = 0;
+        crossRecord.resize(0);
+        //Sets record matrix to all be false;
+        for (int i = 0; i < game().rows(); ++i) {
+            for (int j = 0; j < game().cols(); ++j) {
+                masterRecord[i][j] = false;
+            }
+        }
+
+        for (int i = 0; i < game().rows(); ++i) {
+            for (int j = 0; j < game().cols(); ++j) {
+                //even row
+                if(i % 2 == 0){
+                    //odd column
+                    if(j % 2 == 0){
+                        Point tempPush(i,j);
+                        randomRecord.push_back(tempPush);
+                    }
+                }
+                //odd row
+                else if(i % 2 == 1){
+                    //odd column
+                    if(j % 2 == 1){
+                        Point tempPush1(i,j);
+                        randomRecord.push_back(tempPush1);
+                    }
+                }
+            }
+        }
     }
 
     bool placeShips(Board &b) override{
@@ -420,12 +458,262 @@ public:
 
     Point recommendAttack() override{
         if(state == 1){
-
+            //Picks a point from checkerboard points
+            int index = randInt(randomRecord.size());
+            Point p = randomRecord[index];
+            //Removes it after it has been chosen
+            randomRecord.erase(randomRecord.begin() + index);
+            masterRecord[p.r][p.c] = true;
+            return p;
+        }
+        //Attacks adjacent
+        else if(state == 2 && !secondHit && crossRecord.size() == 0) {
+            //Initialize CrossRecord
+            for (int i = 1; i <= 4; ++i) {
+                if(starting.r + i <= game().rows()){
+                    if(!masterRecord[starting.r + i][starting.c]){
+                        Point p(starting.r + i, starting.c);
+                        crossRecord.push_back(p);
+                    }
+                }
+            }
+            for (int i = 1; i <= 4; ++i) {
+                if(starting.r - i <= game().rows() && starting.r - i >= 0){
+                    if(!masterRecord[starting.r - i][starting.c]){
+                        Point p(starting.r - i, starting.c);
+                        crossRecord.push_back(p);
+                    }
+                }
+            }
+            for (int i = 1; i <= 4; ++i) {
+                if(starting.c + i <= game().cols()){
+                    if(!masterRecord[starting.r][starting.c + i]){
+                        Point p(starting.r, starting.c + i);
+                        crossRecord.push_back(p);
+                    }
+                }
+            }
+            for (int i = 1; i <= 4; ++i) {
+                if(starting.c - i <= game().cols() && starting.c - i >= 0){
+                    if(!masterRecord[starting.r][starting.c - i]){
+                        Point p(starting.r, starting.c - i);
+                        crossRecord.push_back(p);
+                    }
+                }
+            }
+            int index = randInt(crossRecord.size());
+            Point returnPoint = crossRecord[index];
+            crossRecord.erase(crossRecord.begin() + index);
+            return returnPoint;
+        }
+        else if (state == 2 && !secondHit && crossRecord.size() > 0){
+            //Cross attack pattern and crossRecord is already initialized
+            int index = randInt(crossRecord.size());
+            Point returnPoint = crossRecord[index];
+            crossRecord.erase(crossRecord.begin() + index);
+            return returnPoint;
+        }
+        //Repeated Attacking
+        else if(state == 2 && secondHit){
+            if(direction == "LEFT"){
+                if(starting.c - counter >= 0){
+                    if(masterRecord[starting.r][starting.c - counter] == false){
+                    Point temp(starting.r, starting.c - counter);
+                    masterRecord[starting.r][starting.c - counter] = true;
+                    return temp;
+                        }
+                    else{
+                        if(starting.c - counter - 1 >= 0){
+                            Point temp(starting.r, starting.c - counter - 1);
+                            return temp;
+                        }
+                        else{
+                            direction = "RIGHT";
+                            Point temp(starting.r , starting.c + 1);
+                            counter = 2;
+                            return temp;
+                        }
+                    }
+                }
+            }
+            if(direction == "RIGHT"){
+                if(starting.c + counter < game().cols()){
+                    if(masterRecord[starting.r][starting.c + counter] == false){
+                    Point temp(starting.r, starting.c + counter);
+                    masterRecord[starting.r][starting.c + counter] = true;
+                    return temp;
+                        }
+                    else{
+                        if(starting.c + counter + 1 > game().cols()){
+                            Point temp(starting.r, starting.c + counter + 1);
+                            return temp;
+                        }
+                        else{
+                            direction = "LEFT";
+                            Point temp(starting.r, starting.c -1);
+                            counter = 2;
+                            return temp;
+                        }
+                    }
+                }
+            }
+            if(direction == "UP"){
+                if(starting.r - counter >= 0){
+                    if(masterRecord[starting.r - counter][starting.c] == false){
+                    Point temp(starting.r - counter, starting.c);
+                    masterRecord[starting.r - counter][starting.c];
+                    return temp;
+                        }
+                    else{
+                        if(starting.r - counter - 1 >= 0){
+                            Point temp(starting.r-counter-1,starting.c);
+                            return temp;
+                        }
+                        else{
+                            direction = "DOWN";
+                            Point temp(starting.r + 1,starting.c);
+                            counter = 2;
+                            return temp;
+                        }
+                    }
+                }
+            }
+            if(direction == "DOWN"){
+                if(starting.r + counter < game().rows()){
+                    if(masterRecord[starting.r + counter][starting.c] == false){
+                    Point temp(starting.r + counter, starting.c);
+                    masterRecord[starting.r + counter][starting.c] = true;
+                    return temp;
+                        }
+                    else{
+                        if(starting.r + counter + 1 < game().rows()){
+                            Point temp(starting.r+counter+1, starting.c);
+                            return temp;
+                        }
+                        else{
+                            direction = "UP";
+                            Point temp(starting.r - 1, starting.c);
+                            counter = 2;
+                            return temp;
+                        }
+                    }
+                }
+            }
         }
     }
 
     void recordAttackResult(Point p, bool validShot, bool shotHit, bool shipDestroyed, int shipId) override{
-        ;
+        if(validShot && state == 1){
+            if(!shotHit){
+                return;
+            }
+            if(shotHit == true && shipDestroyed == false){
+                //Record starting point for cross reference
+                Point throwaway(p.r,p.c);
+                starting = throwaway;
+                state = 2;
+                return;
+            }
+            if(shotHit == true && shipDestroyed == true){
+                return;
+            }
+        }
+        //Attacking cross pattern and shot was not hit
+         if(validShot && state == 2 && crossRecord.size() > 0 && !shotHit){
+             return;
+         }
+        //Have been attacking cross pattern, and hit a ship segment (must start attacking in that direction)
+        if(validShot && state == 2 && crossRecord.size() > 0 && shotHit){
+            if(direction == "UNKNOWN"){
+                //Setting direction
+            //Attack is to the left of starting
+            if(p.r == starting.r && p.c < starting.c){
+                direction = "LEFT";
+                shotHit = true;
+                counter = 1;
+            }
+            //Attack is to the left of starting
+            if(p.r == starting.r && p.c > starting.c){
+                direction = "RIGHT";
+                shotHit = true;
+                counter = 1;
+            }
+            //Attack is above starting
+            if(p.c == starting.c && p.r < starting.r){
+                direction = "UP";
+                shotHit = true;
+                counter = 1;
+            }
+            //Attack is below starting
+            if(p.c == starting.c && p.r > starting.r){
+                direction = "DOWN";
+                shotHit = true;
+                counter = 1;
+            }
+                }
+            crossRecord.clear();
+            secondHit = true;
+            return;
+        }
+        //Attacking in repeated direction has missed so we must switch directions
+        if(!shotHit && state == 2 && direction != "UNKNOWN" && !changed){
+            if(direction == "LEFT"){
+                direction = "RIGHT";
+                counter = 1;
+                changed = true;
+            }
+            else if(direction == "RIGHT"){
+                direction = "LEFT";
+                counter = 1;
+                changed = true;
+            }
+            else if(direction == "UP"){
+                direction = "DOWN";
+                counter = 1;
+                changed = true;
+            }
+            else if(direction == "DOWN"){
+                direction = "UP";
+                counter = 1;
+                changed = true;
+            }
+            return;
+        }
+        //Must change orientation
+        if(!shotHit && state == 2 && direction != "UNKNOWN" && changed && !changedOrientation){
+            if(direction == "LEFT" || direction == "RIGHT"){
+                direction = "UP";
+                changed = false;
+                changedOrientation = true;
+            }
+            else if(direction == "UP" || direction == "DOWN"){
+                direction = "LEFT";
+                changed = false;
+                changedOrientation = true;
+            }
+        }
+        //Attacking in one direction hit without sinking ship (we should keep going that way
+        if(shotHit && state == 2 && direction != "UNKNOWN" && !shipDestroyed){
+            counter++;
+            return;
+        }
+        //Attacking in repeated direction sunk ship
+        if(state == 2 && direction != "UNKNOWN" && shipDestroyed){
+            state = 1;
+            direction = "UNKNOWN";
+            counter = 1;
+            secondHit = false;
+            changed = false;
+        }
+        //Edge case
+        if(!shotHit && state == 2 && direction != "UNKNOWN" && changed){
+            state = 1;
+            return;
+        }
+
+        if(state == 2 && changed && direction != "UNKNOWN" && counter > 6){
+            state = 1;
+        }
     }
 
     void recordAttackByOpponent(Point p) override{
@@ -433,6 +721,17 @@ public:
     }
 private:
     int state;
+    bool secondHit;
+    string direction;
+    int counter;
+    bool changed;
+    bool changedOrientation;
+    bool masterRecord[MAXROWS][MAXCOLS];
+    vector<Point> randomRecord;
+    vector<Point> crossRecord;
+    Point starting;
+    Point repeatedAttack;
+
 };
 
 //*********************************************************************
