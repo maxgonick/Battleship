@@ -16,7 +16,7 @@ bool addStandardShips(Game& g)
 }
 
 
-
+//
 //int main(){
 //    const int NTRIALS = 5;
 //    Game g(5,5);
@@ -31,7 +31,7 @@ bool addStandardShips(Game& g)
 
 int main()
 {
-    const int NTRIALS = 10;
+    const int NTRIALS = 100;
 
     cout << "Select one of these choices for an example of the game:" << endl;
     cout << "  1.  A mini-game between two mediocre players" << endl;
@@ -98,8 +98,8 @@ int main()
     }
 }
 
-
 /*
+
 bool addStandardShips(Game &g) {
     return g.addShip(5, 'A', "aircraft carrier") &&
            g.addShip(4, 'B', "battleship") && g.addShip(3, 'D', "destroyer") &&
@@ -311,7 +311,6 @@ void human_player_tests() {
 
     Game g_std{MAXROWS, MAXCOLS};
     addStandardShips(g_std);
-
     Player *h_2_std = createPlayer("human", "human_test_2", g_std);
 ////    Player *m_std = createPlayer("mediocre", "mediocre_test", g_std);
 //    Player *good = createPlayer("good", "Good Gerard", g_std);
@@ -394,7 +393,7 @@ void good_player_tests() {
         Player *good = createPlayer("good", "test_good", g_std);
         Player *mediocre = createPlayer("mediocre", "test_mediocre", g_std);
 
-// #define DISABLE_COUT_AND_CERR_OUTPUT
+ #define DISABLE_COUT_AND_CERR_OUTPUT
 #ifdef DISABLE_COUT_AND_CERR_OUTPUT
         std::cout.setstate(std::ios_base::failbit);
     std::cerr.setstate(std::ios_base::failbit);
@@ -422,5 +421,6 @@ void good_player_tests() {
 }
 
 int main() {
-mediocre_player_tests();
-} */
+//board_tests();
+}
+*/

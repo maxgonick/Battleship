@@ -254,13 +254,15 @@ class MediocrePlayer : public Player{
         }
         Point recommendAttack() override{
             if(state == 1){
-               int index = randInt(record.size()) - 1;
+               int index = randInt(record.size() - 1);
                Point p = record[index];
-               if(recordRandom[p.r][p.c] == false) {
-                   record.erase(record.begin() + index);
-                   recordRandom[p.r][p.c]
-                   return p;
+               while(recordRandom[p.r][p.c] == true) {
+                   index = randInt(record.size() - 1);
+                   p = record[index];
                }
+               record.erase(record.begin() + index);
+               recordRandom[p.r][p.c] = true;
+               return p;
             }
             //First Time Entering State 2
             else if(state == 2 && recordCross.size() == 0){
@@ -292,6 +294,19 @@ class MediocrePlayer : public Player{
                         recordCross.push_back(p1);
                     }
                     else break;
+                }
+                for (int i = 0; i < game().rows(); ++i) {
+                    for (int j = 0; j < game().cols(); ++j) {
+                        if(recordRandom[i][j] == true){
+                            Point tester(i,j);
+                            for (int k = 0; k < recordCross.size(); ++k) {
+                                Point tester2(recordCross[k].r, recordCross[k].c);
+                                if(tester2.r == tester.r && tester2.c == tester.c){
+                                    recordCross.erase(recordCross.begin()+k);
+                                }
+                            }
+                        }
+                    }
                 }
                 int index = randInt(recordCross.size());
                 Point returnPoint = recordCross[index];

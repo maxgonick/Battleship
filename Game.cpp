@@ -140,6 +140,12 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     int shipId = -1;
     Point attackp1 = p1->recommendAttack();
     b2.attack(attackp1, wasHit, wasDestroyed, shipId);
+    if (wasDestroyed) {
+        shipsCounter1++;
+        if(shipsCounter1 == nShips()){
+            return p1;
+        }
+    }
     cout << p1->name() << " attacked (" << attackp1.r << "," << attackp1.c << ") ";
     if(!wasHit){
         cout << "and missed, resulting in:" << endl;
@@ -150,10 +156,7 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     else if(wasHit && wasDestroyed){
         cout << "and destroyed the " << shipName(shipId) << ", resulting in:" << endl;
     }
-    p1->recordAttackResult(p1->recommendAttack(), true, wasHit, wasDestroyed, shipId);
-    if (wasDestroyed) {
-        shipsCounter1++;
-    }
+    p1->recordAttackResult(attackp1, true, wasHit, wasDestroyed, shipId);
     if (p1->isHuman()) {
         b2.display(true);
     } else {
@@ -175,6 +178,12 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     int shipId2 = false;
     Point attackp2 = p2->recommendAttack();
     b1.attack(attackp2, wasHit2, wasDestroyed2, shipId2);
+    if (wasDestroyed2) {
+        shipsCounter2++;
+        if(shipsCounter2 == nShips()){
+            return p2;
+        }
+    }
     cout << p2->name() << " attacked (" << attackp2.r << "," << attackp2.c << ") ";
     if(!wasHit2){
         cout << "and missed, resulting in:" << endl;
@@ -190,19 +199,20 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
     } else {
         b1.display(false);
     }
+    p2->recordAttackResult(attackp2, true, wasHit2, wasDestroyed2, shipId2);
+
     if(shouldPause) {
         waitForEnter();
     }
-    if (wasDestroyed2) {
-        shipsCounter2++;
-    }
+
 }
-if(shipsCounter1 == nShips()){
-    return p1;
-}
-else if(shipsCounter2 == nShips()){
-    return p2;
-}
+//if(shipsCounter1 == nShips()){
+//    return p1;
+//}
+//else if(shipsCounter2 == nShips()){
+//    return p2;
+//}
+return nullptr;
 }
 
 //******************** Game functions *******************************
