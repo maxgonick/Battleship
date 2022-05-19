@@ -208,15 +208,7 @@ class MediocrePlayer : public Player{
         }
 
         bool placeShips(Board& b) override{
-            for (int i = 0; i < 50; ++i) {
-                b.block();
-                if(placeShipsHelper(b, 0)){
-                    b.unblock();
-                    return true;
-                }
-                b.clear();
-            }
-            return false;
+
         }
 
         bool placeShipsHelper(Board& b, int shipId){
@@ -376,7 +368,72 @@ class MediocrePlayer : public Player{
 
 // TODO:  You need to replace this with a real class declaration and
 //        implementation.
-typedef AwfulPlayer GoodPlayer;
+class GoodPlayer : public Player
+{
+public:
+
+    GoodPlayer(string nm, const Game& g) : Player(nm, g){
+        state = 1;
+    }
+
+    bool placeShips(Board &b) override{
+        for (int i = 0; i < 50; ++i) {
+            b.block();
+            if(placeShipsHelper(b, 0)){
+                b.unblock();
+                return true;
+            }
+            b.clear();
+        }
+        return false;
+    }
+
+    bool placeShipsHelper(Board& b, int shipId){
+        //All ships are placed
+        if(shipId == game().nShips()){
+            return true;
+        }
+
+        for (int i = 0; i < game().rows(); ++i) {
+            for (int j = 0; j < game().cols(); ++j) {
+                Point p(i, j);
+                if(b.placeShip(p, shipId, VERTICAL)){
+                    bool allWerePlacedSuccessfully = placeShipsHelper(b, shipId+1);
+                    //Placed all ships
+                    if(allWerePlacedSuccessfully == true){
+                        return true;
+                    }
+                    b.unplaceShip(p, shipId, VERTICAL);
+                }
+                if(b.placeShip(p, shipId, HORIZONTAL)){
+                    bool allWerePlacedSuccessfully2 = placeShipsHelper(b, shipId+1);
+                    //Placed all ships
+                    if(allWerePlacedSuccessfully2 == true){
+                        return true;
+                    }
+                    b.unplaceShip(p,shipId, HORIZONTAL);
+                }
+            }
+        }
+        return false;
+    }
+
+    Point recommendAttack() override{
+        if(state == 1){
+
+        }
+    }
+
+    void recordAttackResult(Point p, bool validShot, bool shotHit, bool shipDestroyed, int shipId) override{
+        ;
+    }
+
+    void recordAttackByOpponent(Point p) override{
+        ;
+    }
+private:
+    int state;
+};
 
 //*********************************************************************
 //  createPlayer
