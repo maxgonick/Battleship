@@ -14,6 +14,7 @@ class GameImpl
 {
   public:
     GameImpl(int nRows, int nCols);
+    ~GameImpl();
     int rows() const;
     int cols() const;
     bool isValid(Point p) const;
@@ -214,7 +215,11 @@ while(shipsCounter1 != nShips() && shipsCounter2 != nShips()) {
 //}
 return nullptr;
 }
-
+GameImpl::~GameImpl(){
+    for (int i = 0; i < nShips(); ++i) {
+        delete Ships[i];
+    }
+}
 //******************** Game functions *******************************
 
 // These functions for the most part simply delegate to GameImpl's functions.

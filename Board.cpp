@@ -277,6 +277,7 @@ bool BoardImpl::allShipsDestroyed() const
             }
         }
     }
+    return true;
 
 }
 
